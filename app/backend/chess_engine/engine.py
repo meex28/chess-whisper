@@ -1,6 +1,9 @@
 import chess
 import chess.svg
 
+from app.backend.chess_engine.types import SquareFillColor
+
+
 def board_from_fen(fen: str) -> chess.Board:
     return chess.Board(fen)
 
@@ -13,7 +16,7 @@ def save_svg(svg: str, filename: str):
 
 def board_to_svg(
         board: chess.Board,
-        highlighted_squares: list[tuple[list[chess.Square], str]] = [],
+        highlighted_squares: list[tuple[list[chess.Square], SquareFillColor]] = [],
         size: int =600,
         orientation: chess.Color =chess.WHITE
 ) -> str:
@@ -21,7 +24,7 @@ def board_to_svg(
 
     for square_list, color in highlighted_squares:
         for square in square_list:
-            fill_dict[square] = color
+            fill_dict[square] = color.value
 
     return chess.svg.board(
         board=board,
@@ -37,8 +40,8 @@ def main():
     board = board_from_fen(starting_fen)
 
     svg = board_to_svg(board, highlighted_squares=[
-        ([str_to_square('d4'), str_to_square('d5')], 'red'),
-        ([str_to_square('e4'), str_to_square('e5')], 'green')
+        ([str_to_square('d4'), str_to_square('d5')], SquareFillColor.RED),
+        ([str_to_square('e4'), str_to_square('e5')], SquareFillColor.GREEN)
     ])
     save_svg(svg, 'sample_board.svg')
 
