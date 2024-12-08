@@ -4,15 +4,15 @@ from enum import Enum
 
 import chess
 
-
-class UserActionType(Enum):
-    MOVE = "move",
-
 @dataclass
 class Move:
     piece: chess.PieceType
     from_square: chess.Square
     to_square: chess.Square
+
+class UserActionType(Enum):
+    MOVE = "move",
+    CONFIRM = "confirm"
 
 @dataclass
 class UserAction:
@@ -23,15 +23,4 @@ UserActionHandler = Callable[
     [UserAction],
     [str]
 ]
-
-@dataclass
-class DialogStep:
-    board: str # in FEN notation
-    assistantText: str
-    expectedUserAction: UserAction
-    unexpectedUserActionHandler: UserActionHandler
-
-@dataclass
-class Level:
-    name: str
 

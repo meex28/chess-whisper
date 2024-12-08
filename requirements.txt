@@ -6,6 +6,7 @@ cachetools==5.5.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
 chess==1.11.1
+-e git+ssh://git@github.com/meex28/chess-whisper.git@e9ed1ea87bb87cee9aac3c96a0309f3096ef7580#egg=chess_whisper
 click==8.1.7
 gitdb==4.0.11
 GitPython==3.1.43
@@ -24,6 +25,7 @@ pillow==11.0.0
 protobuf==5.29.1
 pyarrow==18.1.0
 pydeck==0.9.1
+pydub==0.25.1
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
@@ -35,6 +37,7 @@ rpds-py==0.22.3
 six==1.17.0
 smmap==5.0.1
 streamlit==1.40.2
+streamlit-audiorecorder==0.0.6
 tenacity==9.0.0
 toml==0.10.2
 tornado==6.4.2

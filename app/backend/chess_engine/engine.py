@@ -34,6 +34,18 @@ def board_to_svg(
         orientation=orientation
     )
 
+def fen_board_to_svg(
+        fen: str,
+        output_path: str = 'board.svg',
+        highlighted_squares: list[tuple[list[chess.Square], SquareFillColor]] = [],
+        size: int =600,
+        orientation: chess.Color = chess.WHITE
+):
+    board = board_from_fen(fen)
+    svg = board_to_svg(board, highlighted_squares, size, orientation)
+    save_svg(svg, output_path)
+    return output_path
+
 # Example usage
 def main():
     starting_fen = chess.STARTING_FEN
