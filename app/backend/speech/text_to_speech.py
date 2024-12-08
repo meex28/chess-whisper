@@ -1,3 +1,6 @@
+import hashlib
+import os
+
 import azure.cognitiveservices.speech as speechsdk
 
 from app.backend.speech.types import VoiceSynthesis
@@ -17,3 +20,17 @@ def text_to_speech(text, output_file) -> VoiceSynthesis:
     elif result.reason == speechsdk.ResultReason.Canceled:
         print("Cannot synthesise speech: {}".format(result))
         return VoiceSynthesis(success=False, output_path="")
+
+def get_audio_cache_filename(text, cache_dir='assets/voice_recordings'):
+    os.makedirs(cache_dir, exist_ok=True)
+    text_hash = hashlib.sha256(text.encode('utf-8')).hexdigest()
+    cache_filename = os.path.join(cache_dir, f"{text_hash}.wav")
+    return cache_filename
+
+def get_speech_recording(text: str) -> VoiceSynthesis:
+    cache_path = get_audio_cache_filename(text)
+    if os.path.exists(cache_path):
+        print(f"Using cached audio for text: {text}")
+        return VoiceSynthesis(success=True, output_path=cache_path)
+
+    return text_to_speech(text, cache_path)
