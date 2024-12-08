@@ -1,5 +1,3 @@
-from enum import Enum
-
 from attr import dataclass
 
 @dataclass
