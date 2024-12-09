@@ -1,6 +1,6 @@
 import azure.cognitiveservices.speech as speechsdk
 
-from app.backend.speech.types import VoiceRecognition, VoiceRecognitionResult
+from app.backend.speech.types import VoiceRecognition
 from app.env import AZURE_STT_API_KEY, AZURE_REGION
 
 

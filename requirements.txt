@@ -6,7 +6,7 @@ cachetools==5.5.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
 chess==1.11.1
--e git+ssh://git@github.com/meex28/chess-whisper.git@e9ed1ea87bb87cee9aac3c96a0309f3096ef7580#egg=chess_whisper
+-e git+ssh://git@github.com/meex28/chess-whisper.git@bf7717da472c998895c7f15adb5b9921e1b5b0e7#egg=chess_whisper
 click==8.1.7
 gitdb==4.0.11
 GitPython==3.1.43

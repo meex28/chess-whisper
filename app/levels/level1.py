@@ -9,8 +9,8 @@ _scenario: Scenario = Scenario(steps=[
             build_assistant_text_callback("""
             Cześć! Jestem Twoim asystentem nauki szachów. 
             Za chwilę rozpoczniemy pierwszą lekcję, która nauczy Cię notacji szachowej. 
-            Będzie ona kluczowe w sposobie, w jakim będziemy się porozumiewać. 
-            Czy jesteś gotowy rozpocząć naszą pierwszą lekcję?
+            Będzie ona kluczowa w sposobie, w jakim będziemy się porozumiewać. 
+            Czy jesteś gotowy na naszą pierwszą lekcję?
             """)
         ]
     ),

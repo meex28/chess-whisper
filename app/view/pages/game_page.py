@@ -3,7 +3,7 @@ from audiorecorder import audiorecorder
 
 from app.levels.level1 import level_one
 from app.service.scenario_flow.scenario import run_scenario_step
-from app.service.session_state import init_level_state_if_empty, get_level_state
+from app.service.session_state import get_level_state, init_level_state_if_empty
 
 init_level_state_if_empty(level = level_one)
 
@@ -21,6 +21,9 @@ def audio_recorder_component():
 st.title("Chess Whisper")
 board_component()
 audio_recorder_component()
+
+if st.button("rerun"):
+    st.rerun()
 
 if st.button("next scenario step"):
     run_scenario_step()
