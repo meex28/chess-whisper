@@ -1,7 +1,7 @@
 import streamlit as st
 from audiorecorder import audiorecorder
 
-from app.gui.scenario import run_scenario_step, get_scenario_state
+from app.service.scenario_flow.scenario import run_scenario_step, get_scenario_state
 from app.levels.level1 import first_level_scenario
 
 if 'scenario_state' not in st.session_state:
