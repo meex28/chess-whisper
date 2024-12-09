@@ -1,8 +1,31 @@
-from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
+from typing import Callable
 
 import chess
+
+ScenarioStepCallback = Callable[[], None]
+
+class ScenarioStepType(Enum):
+    ASSISTANT_TEXT = "assistant_text",
+    BOARD_TRANSFORMATION = "board_transformation",
+    USER_ACTION = "user_action"
+
+@dataclass
+class ScenarioStep:
+    type: ScenarioStepType
+    callbacks: list[ScenarioStepCallback]
+    # TODO: add handlers
+
+@dataclass
+class Scenario:
+    steps: list[ScenarioStep]
+
+@dataclass
+class Level:
+    id: str
+    name: str
+    scenario: Scenario
 
 @dataclass
 class Move:
@@ -18,9 +41,3 @@ class UserActionType(Enum):
 class UserAction:
     type: UserActionType
     details: any # how to handle this?
-
-UserActionHandler = Callable[
-    [UserAction],
-    [str]
-]
-
