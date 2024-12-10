@@ -2,7 +2,7 @@ import streamlit as st
 from audiorecorder import audiorecorder
 
 from app.levels.level1 import level_one
-from app.service.scenario_flow.scenario import run_scenario_step
+from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input
 from app.service.session_state import get_level_state, init_level_state_if_empty
 
 init_level_state_if_empty(level = level_one)
@@ -20,6 +20,14 @@ def audio_recorder_component():
 
 st.title("Chess Whisper")
 board_component()
+
+st.write("Current step index: ", get_level_state().scenario_step_index)
+
+user_input = st.text_input("user input")
+
+if user_input:
+    handle_user_input(user_input)
+
 audio_recorder_component()
 
 if st.button("rerun"):

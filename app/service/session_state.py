@@ -1,16 +1,10 @@
+from dataclasses import dataclass
+
 import chess
 import streamlit as st
-from attr import dataclass
 
-from app.levels.types import Level
+from app.levels.types import Level, LevelState
 
-
-@dataclass
-class LevelState:
-    level: Level
-    scenario_step_index: int
-    board_fen: str
-    board_svg_path: str
 
 def get_level_state() -> LevelState:
     return st.session_state['level_state']
