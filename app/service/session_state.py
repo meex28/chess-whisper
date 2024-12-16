@@ -1,8 +1,7 @@
-from dataclasses import dataclass
-
 import chess
 import streamlit as st
 
+from app.backend.chess_engine.engine import board_from_fen
 from app.levels.types import Level, LevelState
 
 
@@ -16,7 +15,7 @@ def init_level_state(level: Level):
     save_level_state(LevelState(
         level=level,
         scenario_step_index=0,
-        board_fen=chess.STARTING_FEN,
+        board=board_from_fen(chess.STARTING_FEN),
         board_svg_path='assets/starting_board.svg'
     ))
 

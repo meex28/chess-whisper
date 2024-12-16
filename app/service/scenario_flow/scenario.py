@@ -28,6 +28,7 @@ def run_scenario_step():
         callback()
 
 def handle_user_input(user_input: str):
+    print("Handling user input: ", user_input)
     level_state = get_level_state()
     handlers = level_state.level.scenario.steps[level_state.scenario_step_index].handlers
     for handler in handlers:

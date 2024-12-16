@@ -1,4 +1,5 @@
 from app.backend.chess_engine.board_transformations import build_reset_board_transformation
+from app.backend.chess_engine.engine import board_from_fen
 from app.levels.types import ScenarioStepType, Scenario, Level
 from app.service.scenario_flow.callbacks import build_assistant_text_callback, build_board_transformation_callback, \
     build_go_to_next_step_callback
@@ -32,7 +33,7 @@ _scenario: Scenario = Scenario(steps=[
         type=ScenarioStepType.BOARD_TRANSFORMATION,
         callbacks=[
             build_board_transformation_callback(transformations = [
-                build_reset_board_transformation(new_board_fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"),
+                build_reset_board_transformation(new_board=board_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")),
             ])
         ],
     ),
