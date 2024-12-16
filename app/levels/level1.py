@@ -78,7 +78,7 @@ _scenario: Scenario = Scenario(steps=[
         handlers=[
             build_user_move_expected_handler(
                 expected_move=chess.Move.from_uci("f2f4"),
-                unexpected_move_response="To nie ten ruch. Sprawdź na którym rzędzie i w której kolumnie znajdują się pola, a następnie je wypowiedz, np. A1 na B2.",
+                unexpected_move_response="To nie jest ruch wskazany przez podświetlone pola. Sprawdź na którym rzędzie i w której kolumnie znajdują się pola, a następnie je wypowiedz, np. A1 na B2.",
                 callbacks=[
                     build_board_transformation_callback(transformations = [
                         build_move_board_transformation(move=chess.Move.from_uci("f2f4"))

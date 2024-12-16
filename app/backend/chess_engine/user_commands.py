@@ -4,7 +4,7 @@ import chess
 import re
 from typing import Optional
 
-from app.levels.types import Move
+from app.levels.types import RecognisedMove, RecognisedMoveIncorrectReason
 
 
 @dataclass
@@ -65,42 +65,54 @@ def recognise_raw_move_from_text(raw_text: str) -> RawMove:
 def is_enough_move_info(raw_move: RawMove) -> bool:
     return raw_move.fieldTo is not None and (raw_move.fieldFrom is not None or raw_move.piece is not None)
 
-def recognise_move_command(player_color: chess.Color, board: chess.Board, raw_text: str) -> Optional[Move]:
+def recognise_move_command(player_color: chess.Color, board: chess.Board, raw_text: str) -> RecognisedMove:
     raw_move = recognise_raw_move_from_text(raw_text)
 
     if not is_enough_move_info(raw_move):
-        print("Not enough information to recognise a move")
-        return None
+        return RecognisedMove(
+            correct=False,
+            reason=RecognisedMoveIncorrectReason.NOT_ENOUGH_INFO
+        )
 
     if raw_move.piece is None:
         piece = board.piece_at(raw_move.fieldFrom)
-        if piece is None or piece.color != player_color:
-            print("Player's piece was not selected")
-            return None
+        if piece is None:
+            return RecognisedMove(
+                correct=False,
+                reason=RecognisedMoveIncorrectReason.PIECE_NOT_SELECTED
+            )
         raw_move.piece = piece.piece_type
 
     if raw_move.fieldFrom is None:
         pieces_on_board = board.pieces(piece_type=raw_move.piece, color=player_color)
         if len(pieces_on_board) == 0 or len(pieces_on_board) > 1:
-            print("There is no selected piece type on the board or there are more than one")
-            return None
+            return RecognisedMove(
+                correct=False,
+                reason=RecognisedMoveIncorrectReason.MULTIPLE_PIECES_FOUND
+            )
         raw_move.fieldFrom = list(pieces_on_board)[0]
 
     if board.piece_at(raw_move.fieldFrom).piece_type != raw_move.piece:
-        print(f"Piece type at selected square is different than selected piece type (on board: {board.piece_at(raw_move.fieldFrom).piece_type}, selected: {raw_move.piece})")
-        return None
+        return RecognisedMove(
+            correct=False,
+            reason=RecognisedMoveIncorrectReason.PIECE_TYPE_MISMATCH
+        )
 
     if not board.piece_at(raw_move.fieldFrom).color == player_color:
-        print("Selected piece doesn't belong to the player")
-        return None
+        return RecognisedMove(
+            correct=False,
+            reason=RecognisedMoveIncorrectReason.WRONG_PLAYER_PIECE
+        )
 
     chess_move = chess.Move(from_square=raw_move.fieldFrom, to_square=raw_move.fieldTo)
     if chess_move not in board.legal_moves:
-        print(f"Selected move is illegal (move: {chess_move}, legal moves: {list(board.legal_moves)})")
-        return None
+        return RecognisedMove(
+            correct=False,
+            reason=RecognisedMoveIncorrectReason.ILLEGAL_MOVE
+        )
 
-    return Move(
+    return RecognisedMove(
+        correct=True,
         piece=raw_move.piece,
-        from_square=raw_move.fieldFrom,
-        to_square=raw_move.fieldTo,
+        chess_move=chess_move
     )
