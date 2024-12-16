@@ -25,8 +25,9 @@ st.write("Current step index: ", get_level_state().scenario_step_index)
 
 user_input = st.text_input("user input")
 
-if user_input:
+if st.button("Submit"):
     handle_user_input(user_input)
+    user_input = None
 
 audio_recorder_component()
 

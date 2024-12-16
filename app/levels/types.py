@@ -38,6 +38,7 @@ class Level:
 class LevelState:
     level: Level
     scenario_step_index: int
+    user_color: chess.Color
     board: chess.Board
     board_svg_path: str
 

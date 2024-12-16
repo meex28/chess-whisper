@@ -1,11 +1,13 @@
+import chess
+
 from app.backend.chess_engine.board_transformations import build_reset_board_transformation, \
-    build_highlight_squares_board_transformation
+    build_highlight_squares_board_transformation, build_move_board_transformation
 from app.backend.chess_engine.engine import board_from_fen, str_to_square
 from app.backend.chess_engine.types import SquareFillColor
 from app.levels.types import ScenarioStepType, Scenario, Level
 from app.service.scenario_flow.callbacks import build_assistant_text_callback, build_board_transformation_callback, \
     build_go_to_next_step_callback, go_to_next_step_callback
-from app.service.scenario_flow.handlers import build_user_confirmation_handler
+from app.service.scenario_flow.handlers import build_user_confirmation_handler, build_user_move_expected_handler
 from app.service.scenario_flow.scenario import build_scenario_step
 
 _scenario: Scenario = Scenario(steps=[
@@ -35,6 +37,23 @@ _scenario: Scenario = Scenario(steps=[
         ]
     ),
     build_scenario_step(
+        type=ScenarioStepType.ASSISTANT_TEXT,
+        callbacks=[
+            build_assistant_text_callback("""
+            Wyjaśnienie notacji. 
+            """),
+            # build_assistant_text_callback("""
+            # Notacja szachowa to prosty sposób opisywania ruchów. Każde pole na szachownicy ma swoją unikalną nazwę.
+            # Kolumny oznaczamy literami od A do H, idąc od lewej strony.
+            # Rzędy numerujemy od 1 do 8, od dolnej linii.
+            # Na przykład, pole w lewym dolnym rogu to A1, w centrum szachownicy to E4, a prawy górny róg to H8.
+            # Gdy chcesz wykonać ruch, powiedz mi dokładnie, skąd i dokąd przenosisz figurę.
+            # Możesz powiedzieć "skoczek z F3 na G5" albo "H1 na H7".
+            # """),
+            build_go_to_next_step_callback()
+        ],
+    ),
+    build_scenario_step(
         type=ScenarioStepType.BOARD_TRANSFORMATION,
         callbacks=[
             build_board_transformation_callback(transformations = [
@@ -48,9 +67,25 @@ _scenario: Scenario = Scenario(steps=[
         ],
     ),
     build_scenario_step(
+        type=ScenarioStepType.ASSISTANT_TEXT,
+        callbacks=[
+            build_assistant_text_callback("Sprawdźmy to w praktyce. Przesuń bierkę z żółtego pola na pole zielone."),
+            build_go_to_next_step_callback()
+        ]
+    ),
+    build_scenario_step(
         type=ScenarioStepType.USER_ACTION,
         handlers=[
-
+            build_user_move_expected_handler(
+                expected_move=chess.Move.from_uci("f2f4"),
+                unexpected_move_response="To nie ten ruch. Sprawdź na którym rzędzie i w której kolumnie znajdują się pola, a następnie je wypowiedz, np. A1 na B2.",
+                callbacks=[
+                    build_board_transformation_callback(transformations = [
+                        build_move_board_transformation(move=chess.Move.from_uci("f2f4"))
+                    ]),
+                    build_go_to_next_step_callback(),
+                ]
+            )
         ]
     )
 ])

@@ -15,6 +15,7 @@ def init_level_state(level: Level):
     save_level_state(LevelState(
         level=level,
         scenario_step_index=0,
+        user_color=chess.WHITE,
         board=board_from_fen(chess.STARTING_FEN),
         board_svg_path='assets/starting_board.svg'
     ))
