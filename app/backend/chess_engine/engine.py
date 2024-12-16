@@ -13,6 +13,7 @@ def str_to_square(square: str) -> chess.Square:
 def save_svg(svg: str, filename: str):
     with open(filename, 'w') as f:
         f.write(svg)
+        return filename
 
 def board_to_svg(
         board: chess.Board,
