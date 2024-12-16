@@ -2,13 +2,25 @@ import chess
 
 from app.backend.chess_engine.user_commands import recognise_move_command
 from app.levels.types import UserInputHandlerResult, ScenarioStepCallback, UserInputHandler, \
-    RecognisedMoveIncorrectReason
+    RecognisedMoveIncorrectReason, RestCallbackReason
 from app.service.scenario_flow.callbacks import assistant_unrecognized_input_callback, build_assistant_text_callback
-from app.service.session_state import LevelState
+from app.service.session_state import LevelState, reset_session_state
+
+
+def handle_reset_command(user_input: str) -> bool:
+    reset_keywords = ["reset", "restart", "zacznij od nowa", "od początku"]
+    return any(keyword in user_input.lower() for keyword in reset_keywords)
 
 
 def build_user_confirmation_handler(callbacks: list[ScenarioStepCallback]) -> UserInputHandler:
     def run(raw_user_input: str, _: LevelState) -> UserInputHandlerResult:
+        if handle_reset_command(raw_user_input):
+            reset_session_state()
+            return UserInputHandlerResult(
+                accepted=True,
+                callbacks=[build_assistant_text_callback(RestCallbackReason.PLAYER_COMMAND_INPUT.value)]
+            )
+
         confirmation_words = ["tak", "pewnie", "oczywiście", "jazda", "dawaj"]
         user_input = raw_user_input.strip().lower()
 
@@ -33,8 +45,19 @@ incorrect_move_responses: dict[RecognisedMoveIncorrectReason, str] = {
     RecognisedMoveIncorrectReason.ILLEGAL_MOVE: "Wybrany ruch jest niedozwolony. Spróbuj ponownie."
 }
 
+reset_responses: dict[RestCallbackReason, str] = {
+    RestCallbackReason.PLAYER_COMMAND_INPUT: "Stan gry został zresetowany. Naciśnij przycisk \"Start\" aby rozpocząć ponownie. ",
+}
+
 def build_user_move_expected_handler(expected_move: chess.Move, unexpected_move_response: str, callbacks: list[ScenarioStepCallback]) -> UserInputHandler:
     def run(user_input: str, level_state: LevelState) -> UserInputHandlerResult:
+        if handle_reset_command(user_input):
+            reset_session_state()
+            return UserInputHandlerResult(
+                accepted=True,
+                callbacks=[build_assistant_text_callback(RestCallbackReason.PLAYER_COMMAND_INPUT.value)]
+            )
+
         recognised_move = recognise_move_command(
             player_color=level_state.user_color,
             board=level_state.board,

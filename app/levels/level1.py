@@ -10,6 +10,8 @@ from app.service.scenario_flow.callbacks import build_assistant_text_callback, b
 from app.service.scenario_flow.handlers import build_user_confirmation_handler, build_user_move_expected_handler
 from app.service.scenario_flow.scenario import build_scenario_step
 
+
+
 _scenario: Scenario = Scenario(steps=[
     build_scenario_step(
         type=ScenarioStepType.ASSISTANT_TEXT,

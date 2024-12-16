@@ -6,7 +6,19 @@ from audiorecorder import audiorecorder
 from app.levels.level1 import level_one
 from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input, handle_user_input_from_voice
 from app.service.session_state import get_level_state, save_previous_audio, \
-    get_previous_audio, init_session_state
+    get_previous_audio, init_session_state, get_chat_messages, add_chat_message, reset_session_state
+
+st.markdown(
+    """
+    <style>
+        .chat-container {
+            height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 init_session_state(level=level_one)
 
@@ -18,28 +30,42 @@ def board_component():
 
 def audio_recorder_component():
     audio = audiorecorder("", "")
-    # TODO: handling is in endless loop when on re-renders
     if len(audio) > 0 and get_previous_audio() != audio:
-        os.makedirs("assets/user_input", exist_ok=True)
-        audio.export("assets/user_input/voice.wav", format="wav")
-        handle_user_input_from_voice("assets/user_input/voice.wav")
         save_previous_audio(audio)
+        
+        try:
+            os.makedirs("assets/user_input", exist_ok=True)
+            audio.export("assets/user_input/voice.wav", format="wav")
+            handle_user_input_from_voice("assets/user_input/voice.wav")
+        except Exception as e:
+            st.error(f"Error processing audio: {str(e)}")
+
 
 st.title("Chess Whisper")
-board_component()
+left_column, right_column = st.columns([1, 1])
 
-st.write("Current step index: ", get_level_state().scenario_step_index)
+with right_column:
+    board_component()
 
-user_input = st.text_input("user input")
 
-if st.button("Submit"):
-    handle_user_input(user_input)
-    user_input = None
+with left_column:
+    st.write("Current step index: ", get_level_state().scenario_step_index)
 
-audio_recorder_component()
+    with st.container(height=500):
+        for message in get_chat_messages():
+            if message["role"] == "assistant":
+                st.chat_message("assistant").write(message["content"])
+            else:
+                st.chat_message("user").write(message["content"])
 
-if get_level_state().scenario_step_index > 0:
-    run_scenario_step()
+    if prompt := st.chat_input("Jaki jest twój ruch?"):
+            add_chat_message("user", prompt)
+            handle_user_input(prompt)
 
-if st.button("Start"):
-    run_scenario_step()
+    audio_recorder_component()
+
+    if get_level_state().scenario_step_index > 0:
+        run_scenario_step()
+
+    if st.button("Start"):
+        run_scenario_step()

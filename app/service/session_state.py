@@ -1,5 +1,6 @@
 import chess
 import streamlit as st
+from typing import List, Dict
 
 from app.backend.chess_engine.engine import board_from_fen, save_svg, board_to_svg
 from app.levels.types import Level, LevelState
@@ -8,6 +9,7 @@ from app.levels.types import Level, LevelState
 def init_session_state(level: Level):
     init_level_state_if_empty(level=level)
     init_previous_if_empty()
+    init_chat_state_if_empty()
 
 def get_level_state() -> LevelState:
     return st.session_state['level_state']
@@ -39,3 +41,29 @@ def save_previous_audio(audio):
 
 def get_previous_audio():
     return st.session_state['previous']['audio']
+
+def init_chat_state_if_empty():
+    if 'chat_messages' not in st.session_state:
+        st.session_state['chat_messages'] = []
+
+def add_chat_message(role: str, content: str):
+    if 'chat_messages' not in st.session_state:
+        init_chat_state_if_empty()
+    
+    st.session_state['chat_messages'].append({
+        "role": role,
+        "content": content
+    })
+
+def get_chat_messages() -> List[Dict[str, str]]:
+    if 'chat_messages' not in st.session_state:
+        init_chat_state_if_empty()
+    return st.session_state['chat_messages']
+
+def clear_chat_history():
+    st.session_state['chat_messages'] = []
+
+def reset_session_state():
+    if 'level_state' in st.session_state:
+        level = st.session_state['level_state'].level
+        init_level_state(level)

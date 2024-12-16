@@ -51,6 +51,10 @@ class RecognisedMoveIncorrectReason(Enum):
     # TODO: more detailed reasons why move is illegal (like "bishop can move only on diagonal")
     ILLEGAL_MOVE = "illegal_move"
 
+class RestCallbackReason(Enum):
+    PLAYER_COMMAND_INPUT = "player_command_input"
+
+
 @dataclass
 class RecognisedMove:
     correct: bool

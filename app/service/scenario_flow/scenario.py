@@ -1,7 +1,7 @@
 from app.backend.speech.speech_to_text import transcribe_audio_file
 from app.levels.types import ScenarioStepType, ScenarioStepCallback, UserInputHandler, ScenarioStep
 from app.service.scenario_flow.callbacks import assistant_unrecognized_input_callback
-from app.service.session_state import get_level_state
+from app.service.session_state import get_level_state, add_chat_message
 import streamlit as st
 
 def build_scenario_step(
@@ -40,6 +40,7 @@ def handle_user_input_from_voice(recording_path: str):
     voice_recognition = transcribe_audio_file(recording_path)
 
     if voice_recognition.success:
+        add_chat_message("user", voice_recognition.text)
         handle_user_input(voice_recognition.text)
     else:
         print("Speech recognition failed")
