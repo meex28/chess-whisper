@@ -8,8 +8,10 @@ from app.service.session_state import LevelState
 
 
 def build_user_confirmation_handler(callbacks: list[ScenarioStepCallback]) -> UserInputHandler:
-    def run(user_input: str, _: LevelState) -> UserInputHandlerResult:
+    def run(raw_user_input: str, _: LevelState) -> UserInputHandlerResult:
         confirmation_words = ["tak", "pewnie", "oczywiście", "jazda", "dawaj"]
+        user_input = raw_user_input.strip().lower()
+
         accepted = False
         for word in confirmation_words:
             if word in user_input:

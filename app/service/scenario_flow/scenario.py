@@ -1,3 +1,4 @@
+from app.backend.speech.speech_to_text import transcribe_audio_file
 from app.levels.types import ScenarioStepType, ScenarioStepCallback, UserInputHandler, ScenarioStep
 from app.service.scenario_flow.callbacks import assistant_unrecognized_input_callback
 from app.service.session_state import get_level_state
@@ -35,6 +36,16 @@ def run_scenario_step():
 
     st.rerun()
 
+def handle_user_input_from_voice(recording_path: str):
+    voice_recognition = transcribe_audio_file(recording_path)
+
+    if voice_recognition.success:
+        handle_user_input(voice_recognition.text)
+    else:
+        print("Speech recognition failed")
+        assistant_unrecognized_input_callback()
+        st.rerun()
+
 def handle_user_input(user_input: str):
     level_state = get_level_state()
     print(f"Handling user input (current scenario step={level_state.scenario_step_index}): {user_input}")
@@ -56,6 +67,7 @@ def handle_user_input(user_input: str):
         for i, callback in enumerate(all_handlers_result.callbacks):
             print(f"Running user input callback index: {i}")
             callback()
-        st.rerun()
     else:
         assistant_unrecognized_input_callback()
+
+    st.rerun()
