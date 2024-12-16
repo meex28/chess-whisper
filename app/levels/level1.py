@@ -15,14 +15,11 @@ _scenario: Scenario = Scenario(steps=[
         type=ScenarioStepType.ASSISTANT_TEXT,
         callbacks=[
             build_assistant_text_callback("""
+            Cześć! Jestem Twoim asystentem nauki szachów.
+            Za chwilę rozpoczniemy pierwszą lekcję, która nauczy Cię notacji szachowej.
+            Będzie ona kluczowa w sposobie, w jakim będziemy się porozumiewać.
             Czy jesteś gotowy na naszą pierwszą lekcję?
             """),
-            # build_assistant_text_callback("""
-            # Cześć! Jestem Twoim asystentem nauki szachów.
-            # Za chwilę rozpoczniemy pierwszą lekcję, która nauczy Cię notacji szachowej.
-            # Będzie ona kluczowa w sposobie, w jakim będziemy się porozumiewać.
-            # Czy jesteś gotowy na naszą pierwszą lekcję?
-            # """),
             build_go_to_next_step_callback()
         ],
     ),
@@ -40,16 +37,13 @@ _scenario: Scenario = Scenario(steps=[
         type=ScenarioStepType.ASSISTANT_TEXT,
         callbacks=[
             build_assistant_text_callback("""
-            Wyjaśnienie notacji. 
+            Notacja szachowa to prosty sposób opisywania ruchów. Każde pole na szachownicy ma swoją unikalną nazwę.
+            Kolumny oznaczamy literami od A do H, idąc od lewej strony.
+            Rzędy numerujemy od 1 do 8, od dolnej linii.
+            Na przykład, pole w lewym dolnym rogu to A1, w centrum szachownicy to E4, a prawy górny róg to H8.
+            Gdy chcesz wykonać ruch, powiedz mi dokładnie, skąd i dokąd przenosisz figurę.
+            Możesz powiedzieć "skoczek z F3 na G5" albo "H1 na H7".
             """),
-            # build_assistant_text_callback("""
-            # Notacja szachowa to prosty sposób opisywania ruchów. Każde pole na szachownicy ma swoją unikalną nazwę.
-            # Kolumny oznaczamy literami od A do H, idąc od lewej strony.
-            # Rzędy numerujemy od 1 do 8, od dolnej linii.
-            # Na przykład, pole w lewym dolnym rogu to A1, w centrum szachownicy to E4, a prawy górny róg to H8.
-            # Gdy chcesz wykonać ruch, powiedz mi dokładnie, skąd i dokąd przenosisz figurę.
-            # Możesz powiedzieć "skoczek z F3 na G5" albo "H1 na H7".
-            # """),
             build_go_to_next_step_callback()
         ],
     ),
