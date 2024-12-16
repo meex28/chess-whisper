@@ -40,3 +40,12 @@ def build_move_board_transformation(move: chess.Move) -> BoardTransformation:
             board_svg=board_to_svg(board=current_board)
         )
     return transformation
+
+def build_turn_set_transformation(color: chess.Color) -> BoardTransformation:
+    def transformation(current_board: chess.Board) -> BoardState:
+        current_board.turn = color
+        return BoardState(
+            board=current_board,
+            board_svg=board_to_svg(board=current_board)
+        )
+    return transformation
