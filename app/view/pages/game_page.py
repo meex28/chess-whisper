@@ -30,8 +30,8 @@ if user_input:
 
 audio_recorder_component()
 
-if st.button("rerun"):
-    st.rerun()
+if get_level_state().scenario_step_index > 0:
+    run_scenario_step()
 
-if st.button("next scenario step"):
+if st.button("Start"):
     run_scenario_step()
