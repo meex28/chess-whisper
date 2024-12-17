@@ -2,7 +2,8 @@ from app.backend.speech.speech_to_text import transcribe_audio_file
 from app.levels.types import ScenarioStepType
 from app.service.scenario_flow.all_levels_handlers import all_levels_handlers
 from app.service.scenario_flow.callbacks.assistant_text import assistant_unrecognized_input_callback
-from app.service.session_state import get_level_state, add_chat_message
+from app.service.session_state.chat import add_chat_message
+from app.service.session_state.level_state import get_level_state
 import streamlit as st
 
 

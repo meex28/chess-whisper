@@ -1,7 +1,7 @@
 from app.backend.chess_engine.board_transformations import BoardTransformation
 from app.backend.chess_engine.engine import save_svg
 from app.levels.types import ScenarioStepCallback
-from app.service.session_state import get_level_state, save_level_state
+from app.service.session_state.level_state import get_level_state, save_level_state
 
 
 def build_board_transformation_callback(transformations: list[BoardTransformation]) -> ScenarioStepCallback:

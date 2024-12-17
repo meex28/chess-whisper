@@ -1,4 +1,4 @@
-from app.service.session_state import add_chat_message
+from app.service.session_state.chat import add_chat_message
 
 
 def build_assistant_text_callback(text: str):

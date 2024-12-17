@@ -1,5 +1,5 @@
 from app.levels.types import ScenarioStepCallback
-from app.service.session_state import get_level_state
+from app.service.session_state.level_state import get_level_state
 
 
 def go_to_next_step_callback():

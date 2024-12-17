@@ -5,8 +5,10 @@ from audiorecorder import audiorecorder
 
 from app.levels.level1 import level_one
 from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input, handle_user_input_from_voice
-from app.service.session_state import get_level_state, save_previous_audio, \
-    get_previous_audio, init_session_state, get_chat_messages, add_chat_message, reset_session_state
+from app.service.session_state.session_state import init_session_state
+from app.service.session_state.chat import get_chat_messages
+from app.service.session_state.previous import save_previous_audio, get_previous_audio
+from app.service.session_state.level_state import get_level_state
 
 st.markdown(
     """
