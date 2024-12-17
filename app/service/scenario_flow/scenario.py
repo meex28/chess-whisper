@@ -1,6 +1,7 @@
 from app.backend.speech.speech_to_text import transcribe_audio_file
 from app.levels.types import ScenarioStepType, ScenarioStepCallback, UserInputHandler, ScenarioStep
 from app.service.scenario_flow.callbacks import assistant_unrecognized_input_callback
+from app.service.scenario_flow.handlers.all_levels_handlers import all_levels_handlers
 from app.service.session_state import get_level_state, add_chat_message
 import streamlit as st
 
@@ -51,7 +52,7 @@ def handle_user_input(user_input: str):
     level_state = get_level_state()
     print(f"Handling user input (current scenario step={level_state.scenario_step_index}): {user_input}")
     current_step = level_state.level.scenario.steps[level_state.scenario_step_index]
-    handlers = current_step.handlers
+    handlers = all_levels_handlers + current_step.handlers
 
     if handlers is None or len(handlers) == 0:
         return

@@ -7,7 +7,7 @@ from app.backend.chess_engine.types import SquareFillColor
 from app.levels.types import ScenarioStepType, Scenario, Level
 from app.service.scenario_flow.callbacks import build_assistant_text_callback, build_board_transformation_callback, \
     build_go_to_next_step_callback
-from app.service.scenario_flow.handlers import build_user_confirmation_handler, build_user_move_expected_handler
+from app.service.scenario_flow.handlers.handlers import build_user_confirmation_handler, build_user_move_expected_handler
 from app.service.scenario_flow.scenario import build_scenario_step
 
 
