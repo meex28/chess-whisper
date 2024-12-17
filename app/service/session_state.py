@@ -26,6 +26,7 @@ def init_level_state(level: Level):
         board=start_board,
         board_svg_path=save_svg(board_to_svg(start_board), 'assets/starting_board.svg')
     ))
+    clear_chat_history()
 
 def init_level_state_if_empty(level: Level):
     if 'level_state' not in st.session_state:
@@ -47,8 +48,7 @@ def init_chat_state_if_empty():
         st.session_state['chat_messages'] = []
 
 def add_chat_message(role: str, content: str):
-    if 'chat_messages' not in st.session_state:
-        init_chat_state_if_empty()
+    init_chat_state_if_empty()
     
     st.session_state['chat_messages'].append({
         "role": role,
@@ -56,8 +56,7 @@ def add_chat_message(role: str, content: str):
     })
 
 def get_chat_messages() -> List[Dict[str, str]]:
-    if 'chat_messages' not in st.session_state:
-        init_chat_state_if_empty()
+    init_chat_state_if_empty()
     return st.session_state['chat_messages']
 
 def clear_chat_history():

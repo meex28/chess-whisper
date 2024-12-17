@@ -5,12 +5,12 @@ from app.backend.chess_engine.board_transformations import build_reset_board_tra
 from app.backend.chess_engine.engine import board_from_fen, str_to_square
 from app.backend.chess_engine.types import SquareFillColor
 from app.levels.types import ScenarioStepType, Scenario, Level
-from app.service.scenario_flow.callbacks import build_assistant_text_callback, build_board_transformation_callback, \
-    build_go_to_next_step_callback
-from app.service.scenario_flow.handlers.handlers import build_user_confirmation_handler, build_user_move_expected_handler
-from app.service.scenario_flow.scenario import build_scenario_step
-
-
+from app.service.scenario_flow.callbacks.go_to_next_step import build_go_to_next_step_callback
+from app.service.scenario_flow.callbacks.board_transformation import build_board_transformation_callback
+from app.service.scenario_flow.callbacks.assistant_text import build_assistant_text_callback
+from app.service.scenario_flow.handlers.user_confirmation import build_user_confirmation_handler
+from app.service.scenario_flow.handlers.move_expected import build_user_move_expected_handler
+from app.levels.scenario_builder import build_scenario_step
 
 _scenario: Scenario = Scenario(steps=[
     build_scenario_step(

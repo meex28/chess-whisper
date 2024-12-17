@@ -1,33 +1,10 @@
 import chess
 
 from app.backend.chess_engine.user_commands import recognise_move_command
-from app.levels.types import UserInputHandlerResult, ScenarioStepCallback, UserInputHandler, \
-    RecognisedMoveIncorrectReason, RestCallbackReason
-from app.service.scenario_flow.callbacks import assistant_unrecognized_input_callback, build_assistant_text_callback
-from app.service.session_state import LevelState, reset_session_state
-
-
-def handle_reset_command(user_input: str) -> bool:
-    reset_keywords = ["reset", "restart", "zacznij od nowa", "od początku"]
-    return any(keyword in user_input.lower() for keyword in reset_keywords)
-
-
-def build_user_confirmation_handler(callbacks: list[ScenarioStepCallback]) -> UserInputHandler:
-    def run(raw_user_input: str, _: LevelState) -> UserInputHandlerResult:
-        confirmation_words = ["tak", "pewnie", "oczywiście", "jazda", "dawaj"]
-        user_input = raw_user_input.strip().lower()
-
-        accepted = False
-        for word in confirmation_words:
-            if word in user_input:
-                accepted = True
-                break
-
-        return UserInputHandlerResult(
-            accepted=accepted,
-            callbacks=callbacks if accepted else []
-        )
-    return run
+from app.levels.types import ScenarioStepCallback, UserInputHandler, LevelState, UserInputHandlerResult, \
+    RecognisedMoveIncorrectReason
+from app.service.scenario_flow.callbacks.assistant_text import assistant_unrecognized_input_callback, \
+    build_assistant_text_callback
 
 incorrect_move_responses: dict[RecognisedMoveIncorrectReason, str] = {
     RecognisedMoveIncorrectReason.NOT_ENOUGH_INFO: "Nie udało się rozpoznać ruchu. Podano zbyt mało informacji.",

@@ -1,5 +1,5 @@
-from app.levels.types import LevelState, UserInputHandler, UserInputHandlerResult
-from app.service.scenario_flow.callbacks import build_assistant_text_callback
+from app.levels.types import UserInputHandler, LevelState, UserInputHandlerResult
+from app.service.scenario_flow.callbacks.assistant_text import build_assistant_text_callback
 
 
 def build_reset_level_command_handler() -> UserInputHandler:
@@ -11,5 +11,3 @@ def build_reset_level_command_handler() -> UserInputHandler:
             callbacks=[build_assistant_text_callback("Stan gry został zresetowany. Naciśnij przycisk Start aby rozpocząć ponownie.")]
         )
     return run
-
-all_levels_handlers = [build_reset_level_command_handler()]

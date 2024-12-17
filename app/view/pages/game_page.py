@@ -59,7 +59,6 @@ with left_column:
                 st.chat_message("user").write(message["content"])
 
     if prompt := st.chat_input("Jaki jest twój ruch?"):
-            add_chat_message("user", prompt)
             handle_user_input(prompt)
 
     audio_recorder_component()
