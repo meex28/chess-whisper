@@ -35,19 +35,70 @@ def recognise_piece_from_move(text: str) -> Optional[chess.PieceType]:
     return piece_type
 
 def recognise_squares_from_move(text: str) -> tuple[Optional[chess.Square], Optional[chess.Square]]:
-    squares = []
-    for column in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
-        for row in ['1', '2', '3', '4', '5', '6', '7', '8']:
-            squares.append(column + row)
+    # Letter representations mapping (standard and spoken/written forms)
+    letter_variants = {
+        'a': ['a', 'ah'],
+        'b': ['b', 'be'],
+        'c': ['c', 'ce'],
+        'd': ['d', 'de'],
+        'e': ['e', 'eh'],
+        'f': ['f', 'ef'],
+        'g': ['g', 'gie'],
+        'h': ['h', 'ha']
+    }
 
-    square_pattern = r'[a-hA-H][1-8]'
-    found_squares = re.findall(square_pattern, text)
+    # Number representations mapping (digits and Polish names)
+    number_variants = {
+        '1': ['1', 'jeden'],
+        '2': ['2', 'dwa'],
+        '3': ['3', 'trzy'],
+        '4': ['4', 'cztery'],
+        '5': ['5', 'pięć', 'piec'],
+        '6': ['6', 'sześć', 'szesc'],
+        '7': ['7', 'siedem'],
+        '8': ['8', 'osiem']
+    }
+
+    # Generate all possible combinations with optional space
+    combinations = []
+    for chess_letter, letter_vars in letter_variants.items():
+        for number, number_vars in number_variants.items():
+            for letter_var in letter_vars:
+                for number_var in number_vars:
+                    # Add variant without space
+                    combinations.append((f"{letter_var}{number_var}", chess_letter + number))
+                    # Add variant with space
+                    combinations.append((f"{letter_var} {number_var}", chess_letter + number))
+
+    # Sort combinations by length (longer patterns first to avoid partial matches)
+    combinations.sort(key=lambda x: len(x[0]), reverse=True)
+
+    # Find all matches in the text
+    text = text.lower()
+    found_squares = []
+
+    # Create a copy of text to modify
+    remaining_text = text
+
+    while remaining_text:
+        found_match = False
+        for pattern, square in combinations:
+            if pattern in remaining_text:
+                found_squares.append(square)
+                # Remove the matched part and everything before it to avoid re-matching
+                start_idx = remaining_text.index(pattern)
+                remaining_text = remaining_text[start_idx + len(pattern):]
+                found_match = True
+                break
+        if not found_match:
+            # If no match found, remove first character and continue
+            remaining_text = remaining_text[1:]
 
     field_from: Optional[chess.Square] = None
     field_to: Optional[chess.Square] = None
 
-    if len(found_squares) == 2:
-        # If two squares are found, first is from, second is to
+    if len(found_squares) >= 2:
+        # If two or more squares are found, use the first two
         field_from = chess.parse_square(found_squares[0])
         field_to = chess.parse_square(found_squares[1])
     elif len(found_squares) == 1:
@@ -57,7 +108,11 @@ def recognise_squares_from_move(text: str) -> tuple[Optional[chess.Square], Opti
     return field_from, field_to
 
 def recognise_raw_move_from_text(raw_text: str) -> RawMove:
-    text = raw_text.lower().strip()
+    text = (raw_text.lower()
+            .strip()
+            .replace('.', '')
+            .replace(',', '')
+            )
     selected_piece = recognise_piece_from_move(text)
     selected_squares = recognise_squares_from_move(text)
     return RawMove(piece=selected_piece, fieldFrom=selected_squares[0], fieldTo=selected_squares[1])
