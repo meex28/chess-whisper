@@ -53,7 +53,7 @@ _scenario: Scenario = Scenario(steps=[
         type=ScenarioStepType.BOARD_TRANSFORMATION,
         callbacks=[
             build_board_transformation_callback(transformations = [
-                build_reset_board_transformation(new_board=board_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")),
+                build_reset_board_transformation(new_board=chess.Board()),
                 build_highlight_squares_board_transformation(highlighted_squares=[
                     ([str_to_square('e2')], SquareFillColor.YELLOW),
                     ([str_to_square('e4')], SquareFillColor.GREEN),
