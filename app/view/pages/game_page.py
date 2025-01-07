@@ -14,22 +14,21 @@ from app.service.session_state.previous import save_previous_audio, get_previous
 from app.service.session_state.level_state import get_level_state
 from app.service.util import wait_and_run_callback
 
-st.markdown(
-    """
-    <style>
-        .chat-container {
-            height: 500px;
-            overflow-y: auto;
-        }
-        .stAudio {
-            display: none;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-init_session_state(level=level_one)
+def page_styles():
+    st.markdown(
+        """
+        <style>
+            .chat-container {
+                height: 500px;
+                overflow-y: auto;
+            }
+            .stAudio {
+                display: none;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 def board_component():
     board_path = get_level_state().board_svg_path
@@ -63,13 +62,12 @@ def user_interaction_component():
     can_user_interact = not get_playing_audio_state().is_playing
 
     if can_user_interact:
-        if prompt := st.chat_input(placeholder="Jaki jest twój ruch?", disabled=get_playing_audio_state().is_playing):
+        if prompt := st.chat_input(placeholder="Jaki jest twój ruch?"):
             handle_user_input(prompt)
         audio_recorder_component()
     else:
         if st.button("Skip >>", use_container_width=True):
             on_audio_play_end()
-        play_audio_component()
 
 def chat_component():
     with st.container(height=500):
@@ -81,20 +79,31 @@ def chat_component():
 
     user_interaction_component()
 
-st.title("Chess Whisper")
-st.write("Current step index: ", get_level_state().scenario_step_index)
+def page_header():
+    st.title("Chess Whisper")
+    st.write("Current step index: ", get_level_state().scenario_step_index)
 
-if st.button("Start"):
-    reset_session_state(level=get_level_state().level)
-    run_scenario_step()
+    if st.button("Start"):
+        reset_session_state(level=get_level_state().level)
+        run_scenario_step()
 
-left_column, right_column = st.columns([1, 1])
-with right_column:
-    board_component()
-with left_column:
-    chat_component()
+def page_body():
+    left_column, right_column = st.columns([1, 1])
+    with right_column:
+        board_component()
+    with left_column:
+        chat_component()
 
-if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
-    run_scenario_step()
+def main():
+    init_session_state(level=level_one)
+    if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
+        run_scenario_step()
+    page_styles()
+    page_header()
+    page_body()
 
-st.write(get_level_state())
+    # put at the script end to not block the main thread
+    play_audio_component()
+
+if __name__ == "__main__":
+    main()
