@@ -60,14 +60,27 @@ def audio_recorder_component():
 
 def user_interaction_component():
     can_user_interact = not get_playing_audio_state().is_playing
+    has_level_started = get_level_state().scenario_step_index > 0
+    has_level_ended = get_level_state().scenario_step_index >= len(get_level_state().level.scenario.steps)
 
-    if can_user_interact:
-        if prompt := st.chat_input(placeholder="Jaki jest twój ruch?"):
-            handle_user_input(prompt)
-        audio_recorder_component()
-    else:
-        if st.button("Skip >>", use_container_width=True):
-            on_audio_play_end()
+    with st.container():
+        if not has_level_started:
+            if st.button("Start", use_container_width=True):
+                reset_session_state(level=get_level_state().level)
+                run_scenario_step()
+            st.empty() # add empty to hide audio_recorder_component, IDK why it doesn't hide after rerender
+        elif has_level_ended:
+            if st.button("Dalej", use_container_width=True):
+                handle_user_input("dalej") # should go to next level
+            st.empty()
+        elif can_user_interact:
+            if prompt := st.chat_input(placeholder="Jaki jest twój ruch?"):
+                handle_user_input(prompt)
+            audio_recorder_component()
+        else:
+            if st.button("Skip >>", use_container_width=True):
+                on_audio_play_end()
+            st.empty()
 
 def chat_component():
     with st.container(height=500):
@@ -80,12 +93,9 @@ def chat_component():
     user_interaction_component()
 
 def page_header():
-    st.title("Chess Whisper")
-    st.write("Current step index: ", get_level_state().scenario_step_index)
+    current_level = get_level_state().level
 
-    if st.button("Start"):
-        reset_session_state(level=get_level_state().level)
-        run_scenario_step()
+    st.title(f'Poziom {current_level.id}: {current_level.name}')
 
 def page_body():
     left_column, right_column = st.columns([1, 1])

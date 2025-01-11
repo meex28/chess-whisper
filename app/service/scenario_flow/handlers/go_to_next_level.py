@@ -7,7 +7,8 @@ from app.service.scenario_flow.callbacks.go_to_next_level import build_go_to_nex
 def build_go_to_next_level_command_handler() -> UserInputHandler:
     def run(user_input: str, level_state: LevelState) -> UserInputHandlerResult:
         keywords = ["dalej", "następny poziom"]
-        accepted = any(keyword in user_input.lower() for keyword in keywords)
+        is_level_finished = level_state.scenario_step_index >= len(level_state.level.scenario.steps)
+        accepted = any(keyword in user_input.lower() for keyword in keywords) and is_level_finished
 
         if not accepted:
             return UserInputHandlerResult(
