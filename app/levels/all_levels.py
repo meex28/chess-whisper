@@ -1,8 +1,13 @@
+from app.levels.level0 import level_zero
 from app.levels.level1 import level_one
 from app.levels.level2 import level_two
 from app.levels.types import Level
 
-all_levels: list[Level] = [level_one, level_two]
+all_levels: list[Level] = [
+    level_zero,
+    level_one,
+    level_two
+]
 
 def find_next_level(current_level_id: str):
     for i, level in enumerate(all_levels):

@@ -4,6 +4,7 @@ import os
 import streamlit as st
 from audiorecorder import audiorecorder
 
+from app.levels.level0 import level_zero
 from app.levels.level1 import level_one
 from app.service.audio_service import get_audio_duration
 from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input, handle_user_input_from_voice
@@ -105,7 +106,7 @@ def page_body():
         chat_component()
 
 def main():
-    init_session_state(level=level_one)
+    init_session_state(level=level_zero)
     if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
         run_scenario_step()
     page_styles()
