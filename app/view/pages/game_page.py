@@ -106,11 +106,27 @@ def page_body():
     with left_column:
         chat_component()
 
+def sidebar_component():
+    with st.sidebar:
+        st.title("Wybór poziomu")
+        levels = [level_zero, level_one, level_two]
+        
+        for level in levels:
+            if st.button(f"Poziom {level.id} - {level.name}", use_container_width=True):
+                reset_session_state(level=level)
+                st.rerun()
+
+        st.markdown("---")  # horizontal line
+        if st.button("Reset poziomu", use_container_width=True):
+            reset_session_state(level=get_level_state().level)
+            st.rerun()
+
 def main():
     init_session_state(level=level_zero)
     if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
         run_scenario_step()
     page_styles()
+    sidebar_component()
     page_header()
     page_body()
 
