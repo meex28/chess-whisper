@@ -6,6 +6,7 @@ from audiorecorder import audiorecorder
 
 from app.levels.level0 import level_zero
 from app.levels.level1 import level_one
+from app.levels.level2 import level_two
 from app.service.audio_service import get_audio_duration
 from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input, handle_user_input_from_voice
 from app.service.session_state.playing_audio import get_playing_audio_state, reset_playing_audio_state
@@ -70,18 +71,18 @@ def user_interaction_component():
                 reset_session_state(level=get_level_state().level)
                 run_scenario_step()
             st.empty() # add empty to hide audio_recorder_component, IDK why it doesn't hide after rerender
+        elif not can_user_interact:
+            if st.button("Skip >>", use_container_width=True):
+                on_audio_play_end()
+            st.empty()
         elif has_level_ended:
             if st.button("Dalej", use_container_width=True):
                 handle_user_input("dalej") # should go to next level
             st.empty()
-        elif can_user_interact:
+        else:
             if prompt := st.chat_input(placeholder="Jaki jest twój ruch?"):
                 handle_user_input(prompt)
             audio_recorder_component()
-        else:
-            if st.button("Skip >>", use_container_width=True):
-                on_audio_play_end()
-            st.empty()
 
 def chat_component():
     with st.container(height=500):

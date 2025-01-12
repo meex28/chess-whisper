@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 import chess
-import re
 from typing import Optional
 
 from app.levels.types import RecognisedMove, RecognisedMoveIncorrectReason
@@ -16,9 +15,9 @@ class RawMove:
 
 def recognise_piece_from_move(text: str) -> Optional[chess.PieceType]:
     polish_pieces = {
-        chess.KING: ['król', 'króla'],
+        chess.KING: ['król', 'króla', 'krol', 'krola'],
         chess.QUEEN: ['królowa', 'królową', 'hetman', 'hetmana'],
-        chess.ROOK: ['wieża', 'wieży', 'wieżą'],
+        chess.ROOK: ['wieża', 'wieży', 'wieżą', 'wieza', 'wiezy'],
         chess.BISHOP: ['goniec', 'gońca', 'gońcem'],
         chess.KNIGHT: ['skoczek', 'skoczkiem'],
         chess.PAWN: ['pion', 'pionem', 'piona', 'pionek', 'pionkiem', 'pionka']
