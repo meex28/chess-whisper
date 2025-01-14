@@ -25,6 +25,14 @@ def page_styles():
             .stAudio {
                 display: none;
             }
+            .block-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding-top: 6rem;
+                padding-left: 0rem;
+                padding-right: 0;
+            }
         </style>
         """,
         unsafe_allow_html=True,
@@ -51,12 +59,13 @@ def audio_recorder_component():
     audio = audiorecorder("", "")
     if len(audio) > 0 and get_previous_audio() != audio:
         save_previous_audio(audio)
-        try:
-            os.makedirs("assets/user_input", exist_ok=True)
-            audio.export("assets/user_input/voice.wav", format="wav")
-            handle_user_input_from_voice("assets/user_input/voice.wav")
-        except Exception as e:
-            st.error(f"Error processing audio: {str(e)}")
+        with st.spinner('Przetwarzam nagranie...'):
+            try:
+                os.makedirs("assets/user_input", exist_ok=True)
+                audio.export("assets/user_input/voice.wav", format="wav")
+                handle_user_input_from_voice("assets/user_input/voice.wav")
+            except Exception as e:
+                st.error(f"Error processing audio: {str(e)}")
 
 def user_interaction_component():
     can_user_interact = not get_playing_audio_state().is_playing
