@@ -1,6 +1,7 @@
 from app.levels.all_levels import find_next_level
 from app.levels.types import UserInputHandler, LevelState, UserInputHandlerResult
 from app.service.scenario_flow.callbacks.assistant_text import build_assistant_text_callback
+from app.service.scenario_flow.callbacks.game_finished_callback import build_game_finished_callback
 from app.service.scenario_flow.callbacks.go_to_next_level import build_go_to_next_level_callback
 
 
@@ -20,7 +21,13 @@ def build_go_to_next_level_command_handler() -> UserInputHandler:
         if next_level is None:
             return UserInputHandlerResult(
                 accepted=True,
-                callbacks=[build_assistant_text_callback("Nie ma jeszcze następnego poziomu.")]
+                callbacks=[
+                    build_game_finished_callback(),
+                    build_assistant_text_callback("""
+                    Brawo! Udało Ci się ukończyć wszystkie lekcje!
+                    Teraz nadszedł czas na grę z prawdziwymi przeciwnikami. Powodzenia!
+                    """)
+                ]
             )
 
         return UserInputHandlerResult(

@@ -14,6 +14,12 @@ def save_level_state(level_state: LevelState):
     st.session_state['level_state'] = level_state
 
 
+def set_game_finished(is_finished: bool):
+    level_state = get_level_state()
+    level_state.game_finished = is_finished
+    save_level_state(level_state)
+
+
 def init_level_state(level: Level):
     start_board = board_from_fen(chess.STARTING_FEN)
     save_level_state(LevelState(

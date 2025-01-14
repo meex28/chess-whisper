@@ -41,6 +41,7 @@ class LevelState:
     user_color: chess.Color
     board: chess.Board
     board_svg_path: str
+    game_finished: bool = False
 
 class RecognisedMoveIncorrectReason(Enum):
     NOT_ENOUGH_INFO = "not_enough_info"

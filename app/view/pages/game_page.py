@@ -11,7 +11,7 @@ from app.service.session_state.playing_audio import get_playing_audio_state, res
 from app.service.session_state.session_state import init_session_state, reset_session_state
 from app.service.session_state.chat import get_chat_messages
 from app.service.session_state.previous import save_previous_audio, get_previous_audio
-from app.service.session_state.level_state import get_level_state
+from app.service.session_state.level_state import get_level_state, set_game_finished
 from app.service.util import wait_and_run_callback
 
 def page_styles():
@@ -128,6 +128,13 @@ def sidebar_component():
             reset_session_state(level=get_level_state().level)
             st.rerun()
 
+def balloons_component():
+    if get_level_state().game_finished:
+        st.balloons()
+        set_game_finished(is_finished=False)
+    else:
+        st.empty()
+
 def main():
     init_session_state(level=all_levels[0])
     if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
@@ -136,6 +143,8 @@ def main():
     sidebar_component()
     page_header()
     page_body()
+
+    balloons_component()
 
     # put at the script end to not block the main thread
     play_audio_component()
