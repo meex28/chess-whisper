@@ -62,6 +62,7 @@ _scenario: Scenario = Scenario(steps=[
             Świetnie! Skupimy się na rozmieszczeniu figur specjalnych. 
             Zaczniemy od białych na pierwszym rzędzie. Pierwsza figura po lewej stronie to wieża. 
             Zawsze ustawiamy ją na lewym, skrajnym polu pierwszego rzędu. Możesz ją tam umieścić?
+            Używaj komendy "figura na pole" z użyciem notacji.
             """),
             build_go_to_next_step_callback()
         ]
