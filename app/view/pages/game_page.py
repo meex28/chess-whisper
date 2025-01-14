@@ -4,9 +4,7 @@ import os
 import streamlit as st
 from audiorecorder import audiorecorder
 
-from app.levels.level0 import level_zero
-from app.levels.level1 import level_one
-from app.levels.level2 import level_two
+from app.levels.all_levels import all_levels
 from app.service.audio_service import get_audio_duration
 from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input, handle_user_input_from_voice
 from app.service.session_state.playing_audio import get_playing_audio_state, reset_playing_audio_state
@@ -109,7 +107,7 @@ def page_body():
 def sidebar_component():
     with st.sidebar:
         st.title("Wybór poziomu")
-        levels = [level_zero, level_one, level_two]
+        levels = all_levels
         
         for level in levels:
             if st.button(f"Poziom {level.id} - {level.name}", use_container_width=True):
@@ -122,7 +120,7 @@ def sidebar_component():
             st.rerun()
 
 def main():
-    init_session_state(level=level_zero)
+    init_session_state(level=all_levels[0])
     if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
         run_scenario_step()
     page_styles()

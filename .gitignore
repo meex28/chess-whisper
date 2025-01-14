@@ -1,2 +1,4 @@
 .env
 venv
+/app/assets/voice_recordings/
+/app/assets/user_input/
