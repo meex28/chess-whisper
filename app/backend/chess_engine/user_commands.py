@@ -15,12 +15,67 @@ class RawMove:
 
 def recognise_piece_from_move(text: str) -> Optional[chess.PieceType]:
     polish_pieces = {
-        chess.KING: ['król', 'króla', 'krol', 'krola'],
-        chess.QUEEN: ['królowa', 'królową', 'hetman', 'hetmana'],
-        chess.ROOK: ['wieża', 'wieży', 'wieżą', 'wieza', 'wiezy'],
-        chess.BISHOP: ['goniec', 'gońca', 'gońcem'],
-        chess.KNIGHT: ['skoczek', 'skoczkiem'],
-        chess.PAWN: ['pion', 'pionem', 'piona', 'pionek', 'pionkiem', 'pionka']
+        chess.KING: [
+            # Standard with diacritics
+            'król', 'króla', 'królowi', 'królem', 'królu',
+            # Without diacritics
+            'krol', 'krola', 'krolowi', 'krolem', 'krolu'
+        ],
+        chess.QUEEN: [
+            # Królowa with diacritics
+            'królowa', 'królowej', 'królową', 'królowo',
+            # Without diacritics
+            'krolowa', 'krolowej', 'krolowa', 'krolowo',
+            # Hetman variants
+            'hetman', 'hetmana', 'hetmanowi', 'hetmanem', 'hetmanie',
+            # Regional/colloquial
+            'dama', 'damy', 'damą', 'damie'
+        ],
+        chess.ROOK: [
+            # Standard with diacritics
+            'wieża', 'wieży', 'wieżę', 'wieżą', 'wieżo',
+            # Without diacritics
+            'wieza', 'wiezy', 'wieze', 'wieza', 'wiezo',
+            # Regional/colloquial
+            'wieżowiec', 'wiezowiec', 'wieżyczka', 'wiezyczka',
+            'tura', 'tury', 'turą', 'turze'
+        ],
+        chess.BISHOP: [
+            # Goniec variants with diacritics
+            'goniec', 'gońca', 'gońcowi', 'gońcem', 'gońcu',
+            # Without diacritics
+            'goniec', 'gonca', 'goncowi', 'goncem', 'goncu',
+            # Laufer variants
+            'laufer', 'laufra', 'laufrowi', 'laufrem', 'laufrze',
+            # Regional/colloquial
+            'giermek', 'giermka', 'giermkiem',
+            'biegacz', 'biegacza', 'biegaczem',
+            'poslaniec', 'posłaniec'
+        ],
+        chess.KNIGHT: [
+            # Skoczek variants
+            'skoczek', 'skoczka', 'skoczkowi', 'skoczkiem', 'skoczku',
+            # Koń variants with diacritics
+            'koń', 'konia', 'koniowi', 'koniem', 'koniu',
+            # Without diacritics
+            'kon', 'konia', 'koniowi', 'koniem', 'koniu',
+            # Diminutive forms
+            'koniczek', 'koniczka', 'koniczkowi', 'koniczkiem', 'koniczku',
+            # Regional/colloquial
+            'rumak', 'rumaka', 'rumakiem',
+            'springer', 'springera', 'springerem',
+            'skakacz', 'skakacza', 'skakaczem'
+        ],
+        chess.PAWN: [
+            # Pion variants
+            'pion', 'piona', 'pionowi', 'pionem', 'pionie',
+            # Pionek variants
+            'pionek', 'pionka', 'pionkowi', 'pionkiem', 'pionku',
+            # Regional/colloquial
+            'pieszek', 'pieszka', 'pieszkiem',
+            'szeregowiec', 'szeregowca', 'szeregowcem',
+            'zolnierzyk', 'żołnierzyk'
+        ]
     }
 
     piece_type = None
@@ -68,6 +123,9 @@ def recognise_squares_from_move(text: str) -> tuple[Optional[chess.Square], Opti
                     combinations.append((f"{letter_var}{number_var}", chess_letter + number))
                     # Add variant with space
                     combinations.append((f"{letter_var} {number_var}", chess_letter + number))
+
+    combinations.append(("ewa", "e2"))
+    combinations.append(("EWA", "e2"))
 
     # Sort combinations by length (longer patterns first to avoid partial matches)
     combinations.sort(key=lambda x: len(x[0]), reverse=True)
