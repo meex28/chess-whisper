@@ -3,6 +3,11 @@ from app.levels.level1 import level_one
 from app.levels.level2 import level_two
 from app.levels.level3 import level_three
 from app.levels.level4 import level_four
+from app.levels.level5 import level_five
+from app.levels.level6 import level_six
+from app.levels.level7 import level_seven
+from app.levels.level8 import level_eight
+from app.levels.level9 import level_mate_in_one
 from app.levels.types import Level
 
 all_levels: list[Level] = [
@@ -10,7 +15,12 @@ all_levels: list[Level] = [
     level_one,
     level_two,
     level_three,
-    level_four
+    level_four,
+    level_five,
+    level_six,
+    level_seven,
+    level_eight,
+    level_mate_in_one
 ]
 
 def find_next_level(current_level_id: str):

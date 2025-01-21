@@ -16,57 +16,56 @@ from app.service.scenario_flow.handlers.user_confirmation import build_user_conf
 from app.service.scenario_flow.handlers.move_expected import build_user_move_expected_handler
 from app.levels.scenario_builder import build_scenario_step
 
-_scenario_knight: Scenario = Scenario(steps=[
+_scenario_bishop: Scenario = Scenario(steps=[
     # Introduction
     build_scenario_step(
         type=ScenarioStepType.ASSISTANT_TEXT,
         callbacks=[
             build_assistant_text_callback("""
-            Cześć! Dzisiaj nauczysz się ruchów konia. Wiedziałeś, że koń porusza się w nietypowy sposób? 
-            Wykonuje ruch w kształcie litery „L” – dwa pola w jednym kierunku i jedno w innym, 
-            lub jedno pole w jednym kierunku i dwa w innym. Koń to jedyna figura, która może przeskakiwać inne figury!
+            Witaj! Dzisiaj nauczysz się ruchów gońca. Goniec porusza się po przekątnych, 
+            wyłącznie po polach w swoim kolorze – białych lub czarnych. Na początku każdy gracz 
+            ma dwóch gońców: jednego na białych polach i jednego na czarnych.
             """),
             build_go_to_next_step_callback()
         ],
     ),
 
-    # Setup board for knight's first move
+    # Setup board for dark-squared bishop
     build_scenario_step(
         type=ScenarioStepType.BOARD_TRANSFORMATION,
         callbacks=[
             build_board_transformation_callback(transformations=[
-                build_reset_board_transformation(new_board=chess.Board(fen="8/8/8/8/8/8/8/4N3 w - - 0 1")),
+                build_reset_board_transformation(new_board=chess.Board(fen="8/8/8/8/8/8/8/3B4 w - - 0 1")),
                 build_highlight_squares_board_transformation(highlighted_squares=[
-                    ([str_to_square('e1')], SquareFillColor.YELLOW),
-                    ([str_to_square('g2')], SquareFillColor.GREEN),
+                    ([str_to_square('d1')], SquareFillColor.YELLOW),
+                    ([str_to_square('h5')], SquareFillColor.GREEN),
                 ])
             ]),
             build_go_to_next_step_callback()
         ]
     ),
 
-    # First knight move instruction
+    # Instruction for dark-squared bishop move
     build_scenario_step(
         type=ScenarioStepType.ASSISTANT_TEXT,
         callbacks=[
             build_assistant_text_callback("""
-            Koń porusza się w kształcie litery „L”. Widzisz zielone pole? 
-            Spróbuj przesunąć tam konia.
+            Ten goniec porusza się wyłącznie po czarnych polach. Spróbuj przesunąć go na zielone pole.
             """),
             build_go_to_next_step_callback()
         ]
     ),
 
-    # First knight move execution
+    # Dark-squared bishop move execution
     build_scenario_step(
         type=ScenarioStepType.USER_ACTION,
         handlers=[
             build_user_move_expected_handler(
-                expected_move=chess.Move.from_uci("e1g2"),
-                unexpected_move_response="Spróbuj przesunąć konia z E1 na G2. Pamiętaj o ruchu w kształcie litery „L”.",
+                expected_move=chess.Move.from_uci("d1h5"),
+                unexpected_move_response="Spróbuj przesunąć gońca z D1 na H5. Goniec porusza się po skosie.",
                 callbacks=[
                     build_board_transformation_callback(transformations=[
-                        build_move_board_transformation(move=chess.Move.from_uci("e1g2")),
+                        build_move_board_transformation(move=chess.Move.from_uci("d1h5")),
                         build_turn_set_transformation(color=chess.WHITE)
                     ]),
                     build_go_to_next_step_callback()
@@ -75,42 +74,43 @@ _scenario_knight: Scenario = Scenario(steps=[
         ]
     ),
 
-    # Second move setup
-    build_scenario_step(
-        type=ScenarioStepType.ASSISTANT_TEXT,
-        callbacks=[
-            build_assistant_text_callback("""
-            Świetnie! Koń może poruszać się na osiem różnych pól, o ile są w zasięgu jego ruchu „L”. 
-            Spróbuj przesunąć konia na inne zielone pole.
-            """),
-            build_go_to_next_step_callback()
-        ]
-    ),
-
-    # Highlight squares for second move
+    # Setup board for light-squared bishop
     build_scenario_step(
         type=ScenarioStepType.BOARD_TRANSFORMATION,
         callbacks=[
             build_board_transformation_callback(transformations=[
+                build_reset_board_transformation(new_board=chess.Board(fen="8/8/8/8/8/8/8/4B3 w - - 0 1")),
                 build_highlight_squares_board_transformation(highlighted_squares=[
-                    ([str_to_square('g2')], SquareFillColor.YELLOW),
-                    ([str_to_square('f4')], SquareFillColor.GREEN),
+                    ([str_to_square('e1')], SquareFillColor.YELLOW),
+                    ([str_to_square('a5')], SquareFillColor.GREEN),
                 ])
             ]),
             build_go_to_next_step_callback()
         ]
     ),
 
-    # Second knight move execution
+    # Instruction for light-squared bishop move
+    build_scenario_step(
+        type=ScenarioStepType.ASSISTANT_TEXT,
+        callbacks=[
+            build_assistant_text_callback("""
+            Teraz spróbuj przesunąć drugiego gońca, który porusza się wyłącznie po białych polach. 
+            Przesuń go na zielone pole.
+            """),
+            build_go_to_next_step_callback()
+        ]
+    ),
+
+    # Light-squared bishop move execution
     build_scenario_step(
         type=ScenarioStepType.USER_ACTION,
         handlers=[
             build_user_move_expected_handler(
-                expected_move=chess.Move.from_uci("g2f4"),
-                unexpected_move_response="Spróbuj przesunąć konia z G2 na F4. Pamiętaj o ruchu w kształcie litery „L”.",
+                expected_move=chess.Move.from_uci("e1a5"),
+                unexpected_move_response="Spróbuj przesunąć gońca z E1 na A5. Goniec porusza się po skosie.",
                 callbacks=[
                     build_board_transformation_callback(transformations=[
-                        build_move_board_transformation(move=chess.Move.from_uci("g2f4")),
+                        build_move_board_transformation(move=chess.Move.from_uci("e1a5")),
                         build_turn_set_transformation(color=chess.WHITE)
                     ]),
                     build_go_to_next_step_callback()
@@ -124,16 +124,16 @@ _scenario_knight: Scenario = Scenario(steps=[
         type=ScenarioStepType.ASSISTANT_TEXT,
         callbacks=[
             build_assistant_text_callback("""
-            Brawo! Koń to wyjątkowa figura, ponieważ potrafi przeskakiwać inne figury i zawsze porusza się w kształcie litery „L”. 
-            Opanowanie ruchów konia pozwala na tworzenie zaskakujących zagrożeń w partii. Do zobaczenia w następnej lekcji!
+            Świetnie! Gońce są bardzo silne, gdy mają dużo przestrzeni do ruchu po przekątnych. 
+            Pamiętaj, że zawsze pozostają na swoim kolorze pól. Gratulacje!
             """),
             build_go_to_next_step_callback()
         ]
     ),
 ])
 
-level_four = Level(
-    id="4",
-    name="Ruchy konia",
-    scenario=_scenario_knight
+level_five = Level(
+    id="5",
+    name="Ruchy gońca",
+    scenario=_scenario_bishop
 )

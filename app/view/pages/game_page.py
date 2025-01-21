@@ -3,6 +3,7 @@ import os
 
 import streamlit as st
 from audiorecorder import audiorecorder
+import sounddevice as sd
 
 from app.levels.all_levels import all_levels
 from app.service.audio_service import get_audio_duration
@@ -25,13 +26,13 @@ def page_styles():
             .stAudio {
                 display: none;
             }
-            .block-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding-top: 6rem;
-                padding-left: 0rem;
-                padding-right: 0;
+            img {
+                aspect-ratio: 1 / 1;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+            [aria-label="dialog"] {
+                width: 1500px;
             }
         </style>
         """,
@@ -51,21 +52,41 @@ def on_audio_play_end():
 def play_audio_component():
     audio_state = get_playing_audio_state()
     if audio_state.is_playing and audio_state.audio_file_path:
+        output_device = st.session_state.get('audio_output_device', None)
+        if output_device is not None:
+            try:
+                sd.default.device[1] = output_device
+            except Exception as e:
+                print(f"Error setting output device: {e}")
+
         duration = get_audio_duration(audio_state.audio_file_path)
         st.audio(audio_state.audio_file_path, autoplay=True)
         asyncio.run(wait_and_run_callback(duration, on_audio_play_end))
 
 def audio_recorder_component():
-    audio = audiorecorder("", "")
+    input_device = st.session_state.get('audio_input_device', None)
+    audio = audiorecorder("", "", key=f"audio_recorder_{input_device}")
+    
     if len(audio) > 0 and get_previous_audio() != audio:
         save_previous_audio(audio)
         with st.spinner('Przetwarzam nagranie...'):
             try:
                 os.makedirs("assets/user_input", exist_ok=True)
+                print(f"Recording length: {len(audio)} samples")
+                print(f"Recording sample rate: {audio.frame_rate}")
+
                 audio.export("assets/user_input/voice.wav", format="wav")
-                handle_user_input_from_voice("assets/user_input/voice.wav")
+
+                file_size = os.path.getsize("assets/user_input/voice.wav")
+                print(f"Saved audio file size: {file_size} bytes")
+                
+                if file_size > 0:
+                    handle_user_input_from_voice("assets/user_input/voice.wav")
+                else:
+                    st.error("Nagranie jest puste. Sprawdź ustawienia mikrofonu.")
             except Exception as e:
                 st.error(f"Error processing audio: {str(e)}")
+                print(f"Audio recording error: {str(e)}")
 
 def user_interaction_component():
     can_user_interact = not get_playing_audio_state().is_playing
@@ -77,14 +98,14 @@ def user_interaction_component():
             if st.button("Start", use_container_width=True):
                 reset_session_state(level=get_level_state().level)
                 run_scenario_step()
-            st.empty() # add empty to hide audio_recorder_component, IDK why it doesn't hide after rerender
+            st.empty()
         elif not can_user_interact:
-            if st.button("Skip >>", use_container_width=True):
+            if st.button("Pomiń audio", use_container_width=True):
                 on_audio_play_end()
             st.empty()
         elif has_level_ended:
-            if st.button("Dalej", use_container_width=True):
-                handle_user_input("dalej") # should go to next level
+            if st.button("Następny poziom",use_container_width=True):
+                handle_user_input("dalej")
             st.empty()
         else:
             if prompt := st.chat_input(placeholder="Jaki jest twój ruch?"):
@@ -113,20 +134,31 @@ def page_body():
     with left_column:
         chat_component()
 
-def sidebar_component():
-    with st.sidebar:
-        st.title("Wybór poziomu")
-        levels = all_levels
-        
-        for level in levels:
-            if st.button(f"Poziom {level.id} - {level.name}", use_container_width=True):
-                reset_session_state(level=level)
-                st.rerun()
 
-        st.markdown("---")  # horizontal line
-        if st.button("Reset poziomu", use_container_width=True):
-            reset_session_state(level=get_level_state().level)
+def level_card(level):
+    with st.container(border=True):
+        image_path = f"assets/images/level{level.id}.png"
+        st.image(image_path, use_container_width=True)
+        st.markdown(f"##### {level.id} - {level.name}")
+        if st.button("Start", key=f"start_level_{level.id}", use_container_width=True):
+            reset_session_state(level=level)
             st.rerun()
+
+@st.dialog("Wybierz poziom", width="large")
+def level_selection_dialog():
+    columns = st.columns(5)
+
+    for i, level in enumerate(all_levels):
+        with columns[i % 5]:
+            level_card(level)
+
+def game_view():
+    with st.container():
+        page_styles()
+        page_header()
+        page_body()
+        balloons_component()        
+        play_audio_component()
 
 def balloons_component():
     if get_level_state().game_finished:
@@ -135,18 +167,67 @@ def balloons_component():
     else:
         st.empty()
 
+def sidebar_component():
+    with st.sidebar:
+        if st.button("Wybierz poziom", use_container_width=True):
+            level_selection_dialog()
+
+        st.markdown("---")
+        if st.button("Reset poziomu", use_container_width=True):
+            reset_session_state(level=get_level_state().level)
+            run_scenario_step()
+            st.rerun()
+            
+        st.markdown("---")
+        
+        # Audio settings
+        devices = sd.query_devices()
+        input_devices = [d for d in devices if d['max_input_channels'] > 0]
+        output_devices = [d for d in devices if d['max_output_channels'] > 0]
+        
+        if input_devices or output_devices:
+            st.subheader("Ustawienia audio")
+            
+            if input_devices:
+                input_device_names = [f"{i}: {d['name']}" for i, d in enumerate(input_devices)]
+                selected_input = st.selectbox(
+                    "Wejście audio",
+                    input_device_names,
+                    index=0
+                )
+                input_idx = int(selected_input.split(':')[0])
+                st.session_state['audio_input_device'] = input_idx
+            
+            if output_devices:
+                output_device_names = [f"{i}: {d['name']}" for i, d in enumerate(output_devices)]
+                selected_output = st.selectbox(
+                    "Wyjście audio",
+                    output_device_names,
+                    index=0
+                )
+                output_idx = int(selected_output.split(':')[0])
+                st.session_state['audio_output_device'] = output_idx
+                try:
+                    sd.default.device[1] = output_idx
+                except Exception as e:
+                    print(f"Error setting output device: {e}")
+
 def main():
+    st.set_page_config(
+        layout="wide",
+        initial_sidebar_state="collapsed"
+    )
+
     init_session_state(level=all_levels[0])
+
     if get_level_state().scenario_step_index > 0 and not get_playing_audio_state().is_playing:
         run_scenario_step()
+
     page_styles()
     sidebar_component()
     page_header()
     page_body()
 
-    balloons_component()
-
-    # put at the script end to not block the main thread
     play_audio_component()
 
 if __name__ == "__main__":
