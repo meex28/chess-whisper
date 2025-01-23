@@ -154,14 +154,6 @@ def level_selection_dialog():
         with columns[i % 5]:
             level_card(level)
 
-def game_view():
-    with st.container():
-        page_styles()
-        page_header()
-        page_body()
-        balloons_component()        
-        play_audio_component()
-
 def balloons_component():
     if get_level_state().game_finished:
         st.balloons()
@@ -229,6 +221,8 @@ def main():
     sidebar_component()
     page_header()
     page_body()
+
+    balloons_component()
 
     play_audio_component()
 

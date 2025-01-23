@@ -22,8 +22,9 @@ _scenario_mate_in_one: Scenario = Scenario(steps=[
         type=ScenarioStepType.ASSISTANT_TEXT,
         callbacks=[
             build_assistant_text_callback("""
-            Witaj! Twoim zadaniem jest dać mata przeciwnikowi w jednym posunięciu. Przyjrzyj się uważnie pozycji 
-            i znajdź zwycięski ruch.
+            Witaj! W tej lekcji rozwiążesz swoją pierwszą łamigłówkę szachową. 
+            W takich łamigłówkach Twoim zadaniem jest dać mata przeciwnikowi. W tej konkretnej możesz zrobić to w jednym posunięciu. 
+            Przyjrzyj się uważnie pozycji i znajdź zwycięski ruch.
             """),
             build_go_to_next_step_callback()
         ],
@@ -86,8 +87,8 @@ _scenario_mate_in_one: Scenario = Scenario(steps=[
     ),
 ])
 
-level_mate_in_one = Level(
+level_puzzle_1 = Level(
     id="10",
-    name="Łamigłówka",
+    name="Pierwsza łamigłówka",
     scenario=_scenario_mate_in_one
 )
