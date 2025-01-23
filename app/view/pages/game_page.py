@@ -138,6 +138,8 @@ def page_body():
 def level_card(level):
     with st.container(border=True):
         image_path = f"assets/images/level{level.id}.png"
+        if not os.path.exists(image_path):
+            image_path = f"assets/images/level0.png"
         st.image(image_path, use_container_width=True)
         st.markdown(f"##### {level.id} - {level.name}")
         if st.button("Start", key=f"start_level_{level.id}", use_container_width=True):

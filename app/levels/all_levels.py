@@ -7,7 +7,8 @@ from app.levels.level5 import level_five
 from app.levels.level6 import level_six
 from app.levels.level7 import level_seven
 from app.levels.level8 import level_eight
-from app.levels.level9 import level_mate_in_one
+from app.levels.level10 import level_mate_in_one
+from app.levels.level9 import level_checks
 from app.levels.types import Level
 
 all_levels: list[Level] = [
@@ -20,6 +21,7 @@ all_levels: list[Level] = [
     level_six,
     level_seven,
     level_eight,
+    level_checks,
     level_mate_in_one
 ]
 
