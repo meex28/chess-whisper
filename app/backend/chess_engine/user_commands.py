@@ -92,9 +92,9 @@ def recognise_squares_from_move(text: str) -> tuple[Optional[chess.Square], Opti
     # Letter representations mapping (standard and spoken/written forms)
     letter_variants = {
         'a': ['a', 'ah'],
-        'b': ['b', 'be'],
+        'b': ['b', 'be', 'p', 'pe'],
         'c': ['c', 'ce'],
-        'd': ['d', 'de'],
+        'd': ['d', 'de', 't', 'te'],
         'e': ['e', 'eh'],
         'f': ['f', 'ef'],
         'g': ['g', 'gie'],
@@ -125,31 +125,27 @@ def recognise_squares_from_move(text: str) -> tuple[Optional[chess.Square], Opti
                     combinations.append((f"{letter_var} {number_var}", chess_letter + number))
 
     combinations.append(("ewa", "e2"))
-    combinations.append(("EWA", "e2"))
-
-    # Sort combinations by length (longer patterns first to avoid partial matches)
-    combinations.sort(key=lambda x: len(x[0]), reverse=True)
 
     # Find all matches in the text
     text = text.lower()
     found_squares = []
 
-    # Create a copy of text to modify
-    remaining_text = text
-
-    while remaining_text:
+    # Scan through text from start
+    index = 0
+    while index < len(text):
         found_match = False
+        # Try to find a pattern starting from current index
         for pattern, square in combinations:
-            if pattern in remaining_text:
+            if text[index:].startswith(pattern):
                 found_squares.append(square)
-                # Remove the matched part and everything before it to avoid re-matching
-                start_idx = remaining_text.index(pattern)
-                remaining_text = remaining_text[start_idx + len(pattern):]
+                # Move index past the matched pattern
+                index += len(pattern)
                 found_match = True
                 break
+
+        # If no match found, move to next character
         if not found_match:
-            # If no match found, remove first character and continue
-            remaining_text = remaining_text[1:]
+            index += 1
 
     field_from: Optional[chess.Square] = None
     field_to: Optional[chess.Square] = None
