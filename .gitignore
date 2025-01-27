@@ -2,3 +2,5 @@
 venv
 /app/assets/voice_recordings/
 /app/assets/user_input/
+/app/assets/current_board.svg
+/app/assets/starting_board.svg

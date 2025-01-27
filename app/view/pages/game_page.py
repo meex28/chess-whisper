@@ -138,6 +138,8 @@ def page_body():
 def level_card(level):
     with st.container(border=True):
         image_path = f"assets/images/level{level.id}.png"
+        if not os.path.exists(image_path):
+            image_path = f"assets/images/level0.png"
         st.image(image_path, use_container_width=True)
         st.markdown(f"##### {level.id} - {level.name}")
         if st.button("Start", key=f"start_level_{level.id}", use_container_width=True):
@@ -151,14 +153,6 @@ def level_selection_dialog():
     for i, level in enumerate(all_levels):
         with columns[i % 5]:
             level_card(level)
-
-def game_view():
-    with st.container():
-        page_styles()
-        page_header()
-        page_body()
-        balloons_component()        
-        play_audio_component()
 
 def balloons_component():
     if get_level_state().game_finished:
@@ -227,6 +221,8 @@ def main():
     sidebar_component()
     page_header()
     page_body()
+
+    balloons_component()
 
     play_audio_component()
 
