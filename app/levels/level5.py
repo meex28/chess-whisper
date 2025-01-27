@@ -17,6 +17,32 @@ from app.service.scenario_flow.handlers.move_expected import build_user_move_exp
 from app.levels.scenario_builder import build_scenario_step
 
 _scenario_bishop: Scenario = Scenario(steps=[
+    build_scenario_step(
+        type=ScenarioStepType.BOARD_TRANSFORMATION,
+        callbacks=[
+            build_board_transformation_callback(transformations=[
+                build_reset_board_transformation(new_board=chess.Board(fen="8/8/8/8/8/4B3/8/8 w - - 0 1")),
+                build_highlight_squares_board_transformation(highlighted_squares=[
+                    ([str_to_square('d4')], SquareFillColor.GREEN),
+                    ([str_to_square('c5')], SquareFillColor.GREEN),
+                    ([str_to_square('b6')], SquareFillColor.GREEN),
+                    ([str_to_square('a7')], SquareFillColor.GREEN),
+
+                    ([str_to_square('f4')], SquareFillColor.GREEN),
+                    ([str_to_square('g5')], SquareFillColor.GREEN),
+                    ([str_to_square('h6')], SquareFillColor.GREEN),
+
+                    ([str_to_square('d2')], SquareFillColor.GREEN),
+                    ([str_to_square('c1')], SquareFillColor.GREEN),
+
+                    ([str_to_square('f2')], SquareFillColor.GREEN),
+                    ([str_to_square('g1')], SquareFillColor.GREEN),
+                ])
+            ]),
+            build_go_to_next_step_callback()
+        ]
+    ),
+
     # Introduction
     build_scenario_step(
         type=ScenarioStepType.ASSISTANT_TEXT,

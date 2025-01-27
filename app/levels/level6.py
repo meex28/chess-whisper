@@ -17,6 +17,47 @@ from app.service.scenario_flow.handlers.move_expected import build_user_move_exp
 from app.levels.scenario_builder import build_scenario_step
 
 _scenario: Scenario = Scenario(steps=[
+
+    build_scenario_step(
+        type=ScenarioStepType.BOARD_TRANSFORMATION,
+        callbacks=[
+            build_board_transformation_callback(transformations=[
+                build_reset_board_transformation(new_board=chess.Board(fen="8/8/8/3Q4/8/8/8/8 w - - 0 1")),
+                build_highlight_squares_board_transformation(highlighted_squares=[
+                    ([str_to_square('d1')], SquareFillColor.GREEN),
+                    ([str_to_square('d2')], SquareFillColor.GREEN),
+                    ([str_to_square('d3')], SquareFillColor.GREEN),
+                    ([str_to_square('d4')], SquareFillColor.GREEN),
+                    ([str_to_square('d6')], SquareFillColor.GREEN),
+                    ([str_to_square('d7')], SquareFillColor.GREEN),
+                    ([str_to_square('d8')], SquareFillColor.GREEN),
+
+                    ([str_to_square('a5')], SquareFillColor.GREEN),
+                    ([str_to_square('b5')], SquareFillColor.GREEN),
+                    ([str_to_square('c5')], SquareFillColor.GREEN),
+                    ([str_to_square('e5')], SquareFillColor.GREEN),
+                    ([str_to_square('f5')], SquareFillColor.GREEN),
+                    ([str_to_square('g5')], SquareFillColor.GREEN),
+                    ([str_to_square('h5')], SquareFillColor.GREEN),
+
+                    ([str_to_square('c4')], SquareFillColor.GREEN),
+                    ([str_to_square('b3')], SquareFillColor.GREEN),
+                    ([str_to_square('a2')], SquareFillColor.GREEN),
+                    ([str_to_square('e4')], SquareFillColor.GREEN),
+                    ([str_to_square('f3')], SquareFillColor.GREEN),
+                    ([str_to_square('g2')], SquareFillColor.GREEN),
+                    ([str_to_square('h1')], SquareFillColor.GREEN),
+                    ([str_to_square('c6')], SquareFillColor.GREEN),
+                    ([str_to_square('b7')], SquareFillColor.GREEN),
+                    ([str_to_square('a8')], SquareFillColor.GREEN),
+                    ([str_to_square('e6')], SquareFillColor.GREEN),
+                    ([str_to_square('f7')], SquareFillColor.GREEN),
+                    ([str_to_square('g8')], SquareFillColor.GREEN),
+                ])
+            ]),
+            build_go_to_next_step_callback()
+        ]
+    ),
     # Introduction
     build_scenario_step(
         type=ScenarioStepType.ASSISTANT_TEXT,

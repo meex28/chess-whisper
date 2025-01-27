@@ -17,6 +17,22 @@ from app.service.scenario_flow.handlers.move_expected import build_user_move_exp
 from app.levels.scenario_builder import build_scenario_step
 
 _scenario_pawn: Scenario = Scenario(steps=[
+    build_scenario_step(
+        type=ScenarioStepType.BOARD_TRANSFORMATION,
+        callbacks=[
+            build_board_transformation_callback(transformations=[
+                build_reset_board_transformation(
+                    new_board=chess.Board(fen="rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1")),
+                build_highlight_squares_board_transformation(highlighted_squares=[
+                    ([str_to_square('e5')], SquareFillColor.GREEN),
+                    ([str_to_square('b3')], SquareFillColor.GREEN),
+                    ([str_to_square('b4')], SquareFillColor.GREEN),
+                ])
+            ]),
+            build_go_to_next_step_callback()
+        ]
+    ),
+
     # Introduction
     build_scenario_step(
         type=ScenarioStepType.ASSISTANT_TEXT,
