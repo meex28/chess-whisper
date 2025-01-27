@@ -35,3 +35,9 @@ def find_next_level(current_level_id: str):
             else:
                 return None
     return None
+
+def find_level_by_id(level_id: str) -> Level:
+    for level in all_levels:
+        if level.id == level_id:
+            return level
+    return None

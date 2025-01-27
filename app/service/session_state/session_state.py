@@ -24,6 +24,8 @@ def init_session_state(level: Level):
     init_chat_state_if_empty()
     init_playing_audio_state()
     init_processing_user_input()
+    if 'show_level_dialog' not in st.session_state:
+        st.session_state.show_level_dialog = False
 
 def reset_session_state(level: Level):
     st.session_state.session_state = SessionState()
@@ -38,3 +40,9 @@ def get_active_screen() -> ScreenType:
 
 def set_active_screen(screen: ScreenType):
     st.session_state.session_state.active_screen = screen
+
+def set_show_level_dialog(show: bool):
+    st.session_state.show_level_dialog = show
+
+def get_show_level_dialog() -> bool:
+    return st.session_state.get('show_level_dialog', False)

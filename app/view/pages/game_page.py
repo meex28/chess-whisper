@@ -9,7 +9,7 @@ from app.levels.all_levels import all_levels
 from app.service.audio_service import get_audio_duration
 from app.service.scenario_flow.scenario import run_scenario_step, handle_user_input, handle_user_input_from_voice
 from app.service.session_state.playing_audio import get_playing_audio_state, reset_playing_audio_state
-from app.service.session_state.session_state import init_session_state, reset_session_state
+from app.service.session_state.session_state import init_session_state, reset_session_state, get_show_level_dialog, set_show_level_dialog
 from app.service.session_state.chat import get_chat_messages
 from app.service.session_state.previous import save_previous_audio, get_previous_audio
 from app.service.session_state.level_state import get_level_state, set_game_finished
@@ -143,8 +143,10 @@ def level_card(level):
         st.image(image_path, use_container_width=True)
         st.markdown(f"##### {level.id} - {level.name}")
         if st.button("Start", key=f"start_level_{level.id}", use_container_width=True):
+            set_show_level_dialog(False)
             reset_session_state(level=level)
             st.rerun()
+
 
 @st.dialog("Wybierz poziom", width="large")
 def level_selection_dialog():
@@ -164,7 +166,7 @@ def balloons_component():
 def sidebar_component():
     with st.sidebar:
         if st.button("Wybierz poziom", use_container_width=True):
-            level_selection_dialog()
+            set_show_level_dialog(True)
 
         st.markdown("---")
         if st.button("Reset poziomu", use_container_width=True):
@@ -223,6 +225,9 @@ def main():
     page_body()
 
     balloons_component()
+
+    if get_show_level_dialog():
+        level_selection_dialog()
 
     play_audio_component()
 
